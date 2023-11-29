@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PriceCard from "../components/cards/PriceCard.jsx";
 import { authContext } from "../context";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [prices, setPrices] = useState([]);
   const [state, setState] = authContext();
-  const nameArray = ["BASIC","STANDARD","PREMIUM"];
+  const nameArray = ["BASIC", "STANDARD", "PREMIUM"];
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Home = () => {
       });
       window.open(data);
     } else {
-     navigate("/register");
+      navigate("/register");
     }
   };
   return (
@@ -42,10 +42,15 @@ const Home = () => {
       </div>
 
       <div className="row pt-5 mb-3 text-center">
-      {prices &&
-        prices.map((price,i) => (
-          <PriceCard key={price.id} price={price} handleSubscription={handleClick} name={nameArray[i]} />
-        ))}
+        {prices &&
+          prices.map((price, i) => (
+            <PriceCard
+              key={price.id}
+              price={price}
+              handleSubscription={handleClick}
+              name={nameArray[i]}
+            />
+          ))}
       </div>
     </div>
   );
