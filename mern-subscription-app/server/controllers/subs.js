@@ -28,7 +28,7 @@ export const createSubscription = async (req, res) => {
       cancel_url: process.env.STRIPE_CANCEL_URL,
     });
     // console.log("checkout session", session);
-    res.json({url:session.url});
+    res.json(session.url);
   } catch (err) {
     console.log(err);
   }

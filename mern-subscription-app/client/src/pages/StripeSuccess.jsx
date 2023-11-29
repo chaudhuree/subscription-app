@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { SyncOutlined } from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
+import { authContext } from "../context";
 
 const StripeSuccess = () => {
+  const [state, setState] = authContext();
   const navigate = useNavigate();
   useEffect(() => {
     const getSubscriptionStatus = async () => {
@@ -16,9 +18,19 @@ const StripeSuccess = () => {
       if (data && data.subscriptions.length === 0) {
         navigate("/");
       } else {
-        navigate("/account");
+
+        // update user in local storage
+        const auth = JSON.parse(localStorage.getItem("auth"));
+        auth.user = data;
+        localStorage.setItem("auth", JSON.stringify(auth));
+        // update user in context
+        setState(auth);
+        setTimeout(() => {
+          navigate("/account");
+        }, 1000);
       }
     };
+        
 
     getSubscriptionStatus();
   }, []);
