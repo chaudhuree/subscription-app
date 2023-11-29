@@ -1,5 +1,85 @@
-export const register = (req, res) => {
-  res.json({
-    data: "Hey you reached node server - this is from controllers",
-  });
+import User from "../models/user";
+import { hashPassword, comparePassword } from "../helpers/auth";
+import jwt from "jsonwebtoken";
+
+export const register = async (req, res) => {
+  try {
+    // validation
+    const { name, email, password } = req.body;
+    if (!name) {
+      return res.json({
+        error: "Name is required",
+      });
+    }
+    if (!password || password.length < 6) {
+      return res.json({
+        error: "Password is required and should be 6 characters long",
+      });
+    }
+    const exist = await User.findOne({ email });
+    if (exist) {
+      return res.json({
+        error: "Email is taken",
+      });
+    }
+    // hash password
+    const hashedPassword = await hashPassword(password);
+
+    try {
+      const user = await new User({
+        name,
+        email,
+        password: hashedPassword,
+      }).save();
+
+      // create signed token
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      //   console.log(user);
+      user.password = undefined;
+      
+      return res.json({
+        token,
+        user,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    // check email
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.json({
+        error: "No user found",
+      });
+    }
+    // check password
+    const match = await comparePassword(req.body.password, user.password);
+    if (!match) {
+      return res.json({
+        error: "Wrong password",
+      });
+    }
+    // create signed token
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    user.password = undefined;
+
+    res.json({
+      token,
+      user,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
