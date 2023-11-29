@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Nav from "./components/Nav";
+import StripeCancel from "./pages/StripeCancel";
+import StripeSuccess from "./pages/StripeSuccess";
 function App() {
   return (
     <>
@@ -12,6 +14,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/stripe/cancel" element={<StripeCancel />} />
+          <Route path="/stripe/success" element={<StripeSuccess />} />
         </Routes>
       </Router>
     </>

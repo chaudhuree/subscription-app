@@ -2,11 +2,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import PriceCard from "../components/cards/PriceCard.jsx";
 import { authContext } from "../context";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [prices, setPrices] = useState([]);
   const [state, setState] = authContext();
   const nameArray = ["BASIC","STANDARD","PREMIUM"];
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPrices();
@@ -27,7 +29,7 @@ const Home = () => {
       });
       window.open(data);
     } else {
-      history.push("/register");
+     navigate("/register");
     }
   };
   return (
