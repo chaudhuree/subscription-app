@@ -1,20 +1,38 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const Register = () => {
-  const [name, setName] = useState("chaudhuree");
-  const [email, setEmail] = useState("chaudhuree@gmail.com");
-  const [password, setPassword] = useState("rrrrrr");
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const handleClick = async (e) => {
     // console.log(name, email, password);
     try {
       e.preventDefault();
+      const { data } = await axios.post("http://localhost:5000/api/v1/register", {
+        name,
+        email,
+        password,
+      });
+      
 
-      toast.success("Registration successful. Please login");
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        setName("");
+        setEmail("");
+        setPassword("");
+        toast.success(
+          `Hey ${data.user.name}. You are part of team now. Congrats!`
+        );
+        localStorage.setItem("auth", JSON.stringify(data));
+        navigate("/");
+      }
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong. Try again");
