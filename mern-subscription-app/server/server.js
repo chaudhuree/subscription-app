@@ -26,6 +26,9 @@ app.get("/", (req, res) => {
   res.json({ time: Date().toString() });
 });
 
+// autoload routes
+readdirSync("./routes").map((r) => app.use("/api/v1", require(`./routes/${r}`)));
+
 // listen
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
