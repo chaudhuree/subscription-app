@@ -1,6 +1,8 @@
 import React from "react";
-
-const PriceCard = ({price,name,handleSubscription}) => {
+import { Link } from "react-router-dom";
+import { authContext } from "../../context";
+const PriceCard = ({ price, name, handleSubscription }) => {
+  const [state, setState] = authContext();
   const dynamicDescription = () => {
     if (name === "BASIC") {
       return "5 exclusice stocks";
@@ -22,7 +24,10 @@ const PriceCard = ({price,name,handleSubscription}) => {
   const borderStyle = () => {
     return name === "PREMIUM" ? "border-danger" : "";
   };
-  
+
+  const buttonText = () => {
+    return state && state.token ? "Buy the plan" : "Sign up";
+  };
   return (
     <div className="col">
       <div className={`card mb-4 rounded-3 shadow-sm ${borderStyle()}`}>
@@ -45,12 +50,14 @@ const PriceCard = ({price,name,handleSubscription}) => {
             <li>Help center access</li>
           </ul>
 
-          <button
-            onClick={() => handleSubscription(price)}
-            className={`w-100 btn btn-lg ${buttonStyle()}`}
-          >
-            Sign up
-          </button>
+          <Link to="/register">
+            <button
+              onClick={(e) => handleSubscription(e, price)}
+              className={`w-100 btn btn-lg ${buttonStyle()}`}
+            >
+              {buttonText()}
+            </button>
+          </Link>
         </div>
       </div>
     </div>

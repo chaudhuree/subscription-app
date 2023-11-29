@@ -16,9 +16,9 @@ const Home = () => {
     setPrices(data);
   };
 
-  const handleClick = async (e) => {
+  const handleClick = async (e, price) => {
     e.preventDefault();
-    console.log("plan clicked");
+    console.log("plan clicked", price.id);
   };
   return (
     <div className="container-fluid">
@@ -32,7 +32,7 @@ const Home = () => {
       <div className="row pt-5 mb-3 text-center">
       {prices &&
         prices.map((price,i) => (
-          <PriceCard key={price.id} price={price} handleClick={handleClick} name={nameArray[i]} />
+          <PriceCard key={price.id} price={price} handleSubscription={handleClick} name={nameArray[i]} />
         ))}
       </div>
     </div>
