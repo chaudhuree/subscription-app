@@ -4,11 +4,13 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { authContext } from "../context";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [state,setState]= authContext();
   const navigate = useNavigate();
   const handleClick = async (e) => {
     // console.log(name, email, password);
@@ -20,17 +22,21 @@ const Register = () => {
         password,
       });
       
-
+ 
       if (data.error) {
         toast.error(data.error);
       } else {
         setName("");
         setEmail("");
         setPassword("");
+        localStorage.setItem("auth", JSON.stringify(data));
+        setState({
+          user:data.user,
+          token:data.token
+        });
         toast.success(
           `Hey ${data.user.name}. You are part of team now. Congrats!`
         );
-        localStorage.setItem("auth", JSON.stringify(data));
         navigate("/");
       }
     } catch (err) {

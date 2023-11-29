@@ -4,21 +4,26 @@ import Button from "../components/Button";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {useNavigate} from "react-router-dom";
+import { authContext } from "../context";
 
-const Login = ({ history }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [state,setState]= authContext();
   const navigate = useNavigate();
 
   const handleClick = async (e) => {
     
     try {
       e.preventDefault();
-      const { data } = await axios.post("http://localhost:5000/api/v1/login", {
+      const { data } = await axios.post("/login", {
         email,
         password,
       });
-      console.log(data);
+      setState({
+        user:data.user,
+        token:data.token
+      });
 
       if (data.error) {
         toast.error(data.error);
@@ -62,7 +67,7 @@ const Login = ({ history }) => {
               <Button
                 handleClick={handleClick}
                 type="danger"
-                text="Register"
+                text="Login"
                 size="sm"
               />
             </div>
