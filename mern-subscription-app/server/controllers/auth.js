@@ -1,6 +1,7 @@
 import User from "../models/user";
 import { hashPassword, comparePassword } from "../helpers/auth";
 import jwt from "jsonwebtoken";
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export const register = async (req, res) => {
   try {
@@ -25,11 +26,16 @@ export const register = async (req, res) => {
     // hash password
     const hashedPassword = await hashPassword(password);
 
+    // create account in stripe
+    const customer = await stripe.customers.create({
+      email,
+    });
     try {
       const user = await new User({
         name,
         email,
         password: hashedPassword,
+        stripe_customer_id: customer.id,
       }).save();
 
       // create signed token
