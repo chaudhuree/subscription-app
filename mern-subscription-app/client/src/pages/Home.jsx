@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import PriceCard from "../components/cards/PriceCard.jsx";
+import { authContext } from "../context";
 
 const Home = () => {
   const [prices, setPrices] = useState([]);
+  const [state, setState] = authContext();
   const nameArray = ["BASIC","STANDARD","PREMIUM"];
 
   useEffect(() => {
@@ -18,7 +20,15 @@ const Home = () => {
 
   const handleClick = async (e, price) => {
     e.preventDefault();
-    console.log("plan clicked", price.id);
+    // console.log("plan clicked", price.id);
+    if (state && state.token) {
+      const { data } = await axios.post("/create-subscription", {
+        priceId: price.id,
+      });
+      window.open(data);
+    } else {
+      history.push("/register");
+    }
   };
   return (
     <div className="container-fluid">
