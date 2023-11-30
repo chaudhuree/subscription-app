@@ -6,6 +6,9 @@ import Nav from "./components/Nav";
 import StripeCancel from "./pages/StripeCancel";
 import StripeSuccess from "./pages/StripeSuccess";
 import Account from "./pages/Account";
+import Basic from "./pages/plans/Basic";
+import Standard from "./pages/plans/Standard";
+import Premium from "./pages/plans/Premium";
 function App() {
   return (
     <>
@@ -18,6 +21,9 @@ function App() {
           <Route path="/stripe/cancel" element={<StripeCancel />} />
           <Route path="/stripe/success" element={<StripeSuccess />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/basic" element={<Basic />} />
+          <Route path="/standard" element={<Standard />} />
+          <Route path="/premium" element={<Premium />} />
         </Routes>
       </Router>
     </>

@@ -3,16 +3,14 @@ import { UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { authContext } from "../context";
 import moment from "moment";
+import { getPlanName } from "../utils";
+import { useNavigate } from "react-router-dom";
 
 const Account = () => {
   const [state, setState] = authContext();
   const [subscriptions, setSubscriptions] = useState([]);
-  const planArray=[{amount:1000, planName:"BASIC"},{amount:2000, planName:"STANDARD"},{amount:5000, planName:"PREMIUM"}]
-
-  const getPlanName=(amount)=>{
-    const plan=planArray.find(plan=>plan.amount===amount)
-    return plan.planName
-  }
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const getSubscriptions = async () => {
       const { data } = await axios.get("/subscriptions");
@@ -41,7 +39,7 @@ const Account = () => {
                {/*
                  <h4 className="fw-bold">{sub.plan.nickname}</h4> 
                */}
-                <h4 className="fw-bold text-success">{getPlanName(sub.plan.amount)}</h4>
+                <h4 className="fw-bold text-success">{getPlanName(sub.plan.amount).toUpperCase()}</h4>
                 <h5>
                   {(sub.plan.amount / 100).toLocaleString("en-US", {
                     style: "currency",
@@ -58,7 +56,9 @@ const Account = () => {
                     .format("dddd, MMMM Do YYYY h:mm:ss a")
                     .toString()}
                 </p>
-                <button className="btn btn-outline-danger">Access</button>{" "}
+                <button className="btn btn-outline-danger" onClick={() =>
+                  navigate(`/${getPlanName(subscriptions[0].plan.amount).toLowerCase()}`)
+                }>Access</button>{" "}
                 <button className="btn btn-outline-primary">
                   Manage Subscription
                 </button>

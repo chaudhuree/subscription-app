@@ -3,16 +3,32 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PriceCard from "../components/cards/PriceCard.jsx";
 import { authContext } from "../context";
+import { getPlanName } from "../utils/index.js";
 
 const Home = () => {
   const [prices, setPrices] = useState([]);
+  const [userSubscriptions, setUserSubscriptions] = useState([]);
   const [state, setState] = authContext();
-  const nameArray = ["BASIC", "STANDARD", "PREMIUM"];
+
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchPrices();
   }, []);
+
+  useEffect(() => {
+    let result = [];
+    const check = () =>
+      state &&
+      state.user &&
+      state.user.subscriptions &&
+      state.user.subscriptions.map((sub) => {
+        result.push(sub.plan.id);
+      });
+    check();
+    setUserSubscriptions(result);
+  }, [state && state.user]);
 
   const fetchPrices = async () => {
     const { data } = await axios.get("/prices");
@@ -22,6 +38,13 @@ const Home = () => {
 
   const handleClick = async (e, price) => {
     e.preventDefault();
+    // if plan is already subscribed, redirect to /plan page
+    if (userSubscriptions && userSubscriptions.includes(price.id)) {
+      navigate(`/${getPlanName(price.unit_amount)}`);
+      
+      
+      return;
+    }
     // console.log("plan clicked", price.id);
     if (state && state.token) {
       const { data } = await axios.post("/create-subscription", {
@@ -48,7 +71,8 @@ const Home = () => {
               key={price.id}
               price={price}
               handleSubscription={handleClick}
-              name={nameArray[i]}
+              name={getPlanName(price.unit_amount)}
+              userSubscriptions={userSubscriptions}
             />
           ))}
       </div>

@@ -1,28 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { authContext } from "../../context";
-const PriceCard = ({ price, name, handleSubscription }) => {
+const PriceCard = ({ price, name, handleSubscription, userSubscriptions }) => {
   const [state, setState] = authContext();
   const dynamicDescription = () => {
-    if (name === "BASIC") {
+    if (name.toUpperCase() === "BASIC") {
       return "5 exclusice stocks";
-    } else if (name === "STANDARD") {
+    } else if (name.toUpperCase() === "STANDARD") {
       return "10 exclusice stocks";
-    } else if (name === "PREMIUM") {
+    } else if (name.toUpperCase() === "PREMIUM") {
       return "20 exclusice stocks";
     }
   };
 
   const buttonStyle = () => {
-    return name === "BASIC" ? "btn-outline-danger" : "btn-danger";
+    return name.toUpperCase() === "BASIC" ? "btn-outline-danger" : "btn-danger";
   };
 
   const headerStyle = () => {
-    return name === "PREMIUM" ? "bg-danger text-light" : "";
+    return name.toUpperCase() === "PREMIUM" ? "bg-danger text-light" : "";
   };
 
   const borderStyle = () => {
-    return name === "PREMIUM" ? "border-danger" : "";
+    return name.toUpperCase() === "PREMIUM" ? "border-danger" : "";
   };
 
   const buttonText = () => {
@@ -32,7 +32,7 @@ const PriceCard = ({ price, name, handleSubscription }) => {
     <div className="col">
       <div className={`card mb-4 rounded-3 shadow-sm ${borderStyle()}`}>
         <div className={`card-header py-3 ${headerStyle()}`}>
-          <h4 className="my-0 fw-normal">{name}</h4>
+          <h4 className="my-0 fw-normal">{name.toUpperCase()}</h4>
         </div>
 
         <div className="card-body">
@@ -55,7 +55,9 @@ const PriceCard = ({ price, name, handleSubscription }) => {
               onClick={(e) => handleSubscription(e, price)}
               className={`w-100 btn btn-lg ${buttonStyle()}`}
             >
-              {buttonText()}
+              {userSubscriptions.includes(price.id)
+                ? "Access plan"
+                : buttonText()}
             </button>
           </Link>
         </div>
